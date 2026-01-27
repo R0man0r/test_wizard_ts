@@ -1,0 +1,32 @@
+import { test, expect } from '@playwright/test';
+
+test('test', async ({ page }) => {
+  // await page.goto('http://192.168.1.1/wizards/initial-setup/welcome');
+  // await page.getByText('Добро пожаловать в Мастер первоначальной настройки').click();
+  // await page.locator('#mat-select-value-0').click();
+  // await page.getByRole('listbox', { name: 'Язык' }).getByLabel('English').click();
+  // await page.getByRole('button', { name: 'Start setup' }).click();
+  // await page.locator('#mat-select-value-1').click();
+  // await page.getByRole('listbox', { name: 'Country or region' }).getByLabel('Russia').click();
+  // await page.locator('#mat-select-value-2').getByText('UTC+3 Europe/Moscow').click();
+  // await page.locator('#mat-option-226').getByText('UTC+3 Europe/Moscow').click();
+  // await page.getByRole('button', { name: 'Next' }).click();
+  // await page.locator('.mat-mdc-form-field.ndw-user-password-input__form-field > .mat-mdc-text-field-wrapper > .mat-mdc-form-field-flex > .mat-mdc-form-field-infix').click();
+  // await page.getByRole('textbox', { name: 'Admin password' }).fill('admin1234');
+  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByText('Create a new network and').click();
+  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByText('Ethernet cable from your').click();
+  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByRole('button', { name: 'Confirm' }).click();
+  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByRole('checkbox', { name: 'All day' }).check();
+  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByText('Guests Network').click();
+  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByRole('button', { name: 'Not now' }).click();
+  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByRole('button', { name: 'Finish' }).click();
+});
