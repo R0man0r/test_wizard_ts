@@ -1,4 +1,4 @@
-import { type Locator, type Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 
 
 export abstract class BaseWizardPage {
@@ -7,13 +7,14 @@ export abstract class BaseWizardPage {
     static PATH = '';
     static BtnNextName = 'Next';
     readonly title: Locator;
+    readonly radioLabel: Locator;
 
 
 
     constructor(page: Page) {
         this.page = page;
         this.title = page.locator('.mat-mdc-card-title')
-
+        this.radioLabel = page.locator('label')
     }
 
     async open() {
@@ -27,5 +28,9 @@ export abstract class BaseWizardPage {
         return this.page.getByRole('button', {name: ctor.BtnNextName})
     }
 
+    async validatePage(titleText:string){
+        await expect(this.nextButton()).toBeVisible()
+        await expect(this.title).toHaveText(titleText)
+    }
 
 }
