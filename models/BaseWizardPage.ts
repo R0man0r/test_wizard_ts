@@ -33,4 +33,11 @@ export abstract class BaseWizardPage {
         await expect(this.title).toHaveText(titleText)
     }
 
+    async goToNextPage(nextPagePath: string) {
+        await Promise.all([
+        this.nextButton().click(),
+        this.page.waitForURL(`**/${nextPagePath}`)
+        ])
+    }
+
 }

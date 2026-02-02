@@ -8,24 +8,31 @@ export class CountryPage extends BaseWizardPage {
     readonly option: Locator;
 
     constructor(page: Page) {
-        super(page);
-        this.countryList = this.countryList = page.locator('#mat-select-0 svg')
-        this.timezoneList = page.locator('#mat-select-1 svg')
+        super(page)
+
+        this.countryList = this.countryList = page
+        .locator('mat-form-field')
+        .filter({ hasText: 'Country'})
+        .locator('mat-select')
+
+        this.timezoneList = page
+        .locator('mat-form-field')
+        .filter({ hasText: 'Time zone'})
+        .locator('mat-select')
+
         this.option = page.locator('.mdc-list-item__primary-text')
     }
 
     async chooseCountry(country: string) {
+        await expect(this.countryList).toBeVisible()
         await this.countryList.click()
-        // const option = this.page.locator('div[role="listbox"] >> text=' + country)
-        // await option.waitFor({ state: 'visible'})
         await expect(this.option.getByText(country)).toBeVisible()
         await this.option.getByText(country).click()
     }
 
     async chooseTimezone(timezone: string) {
+        await expect(this.timezoneList).toBeVisible()
         await this.timezoneList.click()
-        // const option = this.page.locator('div[role="listbox"] >> text=' + timezone)
-        // await option.waitFor({state:'visible'})
         await expect(this.option.getByText(timezone)).toBeVisible()
         await this.option.getByText(timezone).click()
     }
