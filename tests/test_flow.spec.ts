@@ -69,7 +69,7 @@ test.describe.serial('Setup wizard flow', () => {
     const extraSegmentsPage = new ExtraSegmentsPage(page)
     await extraSegmentsPage.validatePage("Create Additional Wi-Fi Networks")
     await extraSegmentsPage.chboxGuests.click()
-    await wifiPerfPage.goToNextPage(ShareDataPage.PATH)
+    await extraSegmentsPage.goToNextPage(ShareDataPage.PATH)
 
     const shareDataPage = new ShareDataPage(page)
     await shareDataPage.validatePage("Join the Product Improvement Programme")

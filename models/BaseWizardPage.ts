@@ -34,10 +34,8 @@ export abstract class BaseWizardPage {
     }
 
     async goToNextPage(nextPagePath: string) {
-        await Promise.all([
-        this.nextButton().click(),
-        this.page.waitForURL(`**/${nextPagePath}`)
-        ])
+        await this.nextButton().click(),
+        await this.page.waitForURL(`**/${nextPagePath}`)
     }
 
 }
