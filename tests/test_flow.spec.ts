@@ -1,87 +1,117 @@
-import {test} from "@playwright/test"
-import { WelcomePage } from "../models/WelcomePage"
-import { CountryPage } from "../models/CountryPage"
-import { PasswordPage } from "../models/PasswordPage";
-import { ModePage } from "../models/ModePage";
-import { ModeOptionPage } from "../models/ModeOptionPage";
-import { SchematicPage } from "../models/SchematicPage";
-import { ConnectionPage } from "../models/ConnectionPage";
-import { ScheduleUpdatesPage } from "../models/ScheduleUpdatesPage";
-import { WifiSettingsPage } from "../models/WifiSettingsPage";
-import { WifiPerfPage } from "../models/WifiPerfPage";
-import { ShareDataPage } from "../models/ShareDataPage";
-import { DeviceCredentialsPage } from "../models/DeviceCredentialsPage";
-import { FinishSetupPage } from "../models/FinishSetupPage";
-import { ExtraSegmentsPage } from "../models/ExtraSegmentsPage";
+import { test, expect } from '@playwright/test';
+import { Welcome } from '../models/Welcome';
+import { Country } from '../models/Country';
+import { Password } from '../models/Password';
+import { Mode } from '../models/Mode';
+import { RouterMode } from '../models/RouterMode';
+import { Schema } from '../models/Schema';
+import { trace } from 'node:console';
+import { WanPort } from '../models/WanPort';
+import { ConnectToEth } from '../models/ConnectToEth';
+import { ScheduleUpdates } from '../models/ScheduleUpdates';
+import { WifiSettings } from '../models/WifiSettings';
+import { WifiPerformance } from '../models/WifiPerformance';
+import { ExtraSegments } from '../models/ExtraSegments';
+import { DeviceCreds } from '../models/DeviceCreds';
+import { Finish } from '../models/Finish';
 
-test.describe.serial('Setup wizard flow', () => {
-    test.setTimeout(120_000)
-    test('full setup flow', async ({ page }) => {
-    const welcomePage = new WelcomePage(page);
-    await welcomePage.open()
-    await welcomePage.validatePage('Welcome to the Initial Setup Wizard')
-    await welcomePage.chooseLanguage("English")
-    await welcomePage.goToNextPage(CountryPage.PATH)
+async function traceStep(name: string, action: () => Promise<void>) {
+  const start = Date.now();
+  await test.step(name, action);
+  const end = Date.now();
+  console.log(`Page ${name} test took ${end - start} ms`);
+}
 
-    const countryPage = new CountryPage(page);
-    await countryPage.validatePage('Choose Your Location')
-    await countryPage.chooseCountry("Russia")
-    await countryPage.chooseTimezone("UTC+3 Europe/Moscow")
-    await countryPage.goToNextPage(PasswordPage.PATH)
+test('Setup Wizard Flow', async ({ page }) => {
+  await traceStep('Welcome', async () => {
+    await page.goto('http://192.168.1.1/');
+    const welcomePage = new Welcome(page);
+    await welcomePage.checkUrl();
+    await welcomePage.clickNext();
+  });
 
-    const passwordPage = new PasswordPage(page);
-    await passwordPage.validatePage("Secure Your Device")
-    await passwordPage.pwdField.fill('admin1234')
-    await passwordPage.goToNextPage(ModePage.PATH)
+  await traceStep('Country Select', async () => {
+    const countryPage = new Country(page);
+    await countryPage.checkUrl();
+    await countryPage.clickNext();
+  });
 
-    const modePage = new ModePage(page)
-    await modePage.validatePage("What Would You Like to Do?")
-    await modePage.radioLabel.filter({hasText: 'Create a new network and connect it to the Internet'}).click()
-    await modePage.goToNextPage(ModeOptionPage.PATH)
+  await traceStep('Set up password', async () => {
+    const passwordPage = new Password(page);
+    await passwordPage.checkUrl();
+    await passwordPage.fillPwd('admin1234');
+    await passwordPage.clickNext();
+  });
 
-    const modeOptionPage = new ModeOptionPage(page)
-    await modeOptionPage.validatePage("Choose Your Internet Connection")
-    await modeOptionPage.radioLabel.filter({hasText: "Ethernet cable from your provider"}).click()
-    await modeOptionPage.goToNextPage(SchematicPage.PATH)
+  await traceStep('Mode Selection', async () => {
+    const modePage = new Mode(page);
+    await modePage.checkUrl();
+    await modePage.radioRouter.click();
+    await modePage.clickNext();
+  });
 
-    const schematicPage = new SchematicPage(page)
-    await schematicPage.validatePage("Confirm Your Internet Connection")
-    await schematicPage.goToNextPage(ConnectionPage.PATH)
+  await traceStep('Router Mode Selection', async () => {
+    const routerModePage = new RouterMode(page);
+    await routerModePage.checkUrl();
+    await routerModePage.radioEthCable.click();
+    await routerModePage.clickNext();
+  });
 
-    const connectionPage = new ConnectionPage(page)
-    await connectionPage.validatePage("Connect to Your Provider’s Ethernet")
-    await connectionPage.goToNextPage(ScheduleUpdatesPage.PATH)
+  await traceStep('Router Schematic', async () => {
+    const schematicPage = new Schema(page);
+    await schematicPage.checkUrl();
+    await schematicPage.clickNext();
+  });
 
-    const scheduleUpdatesPage = new ScheduleUpdatesPage(page)
-    await scheduleUpdatesPage.validatePage("Schedule Automatic Software Updates")
-    await scheduleUpdatesPage.chboxAllDay.check()
-    await scheduleUpdatesPage.goToNextPage(WifiSettingsPage.PATH)
+  await traceStep('Select WAN Port', async () => {
+    const wanPortPage = new WanPort(page);
+    await wanPortPage.checkUrl();
+    await wanPortPage.choosePort0();
+    await wanPortPage.clickNext();
+  });
 
-    const wifiSettingsPage = new WifiSettingsPage(page)
-    await wifiSettingsPage.validatePage("Wi-Fi Network Settings")
-    await wifiSettingsPage.goToNextPage(WifiPerfPage.PATH)
+  await traceStep('Connect to Ethernet', async () => {
+    const connectToEthPage = new ConnectToEth(page);
+    await connectToEthPage.checkUrl();
+    await connectToEthPage.clickNext();
+  });
 
-    const wifiPerfPage = new WifiPerfPage(page)
-    await wifiPerfPage.validatePage("Optimize Wi-Fi Network Performance")
-    await wifiPerfPage.radioBalanced.click()
-    await wifiPerfPage.goToNextPage(ExtraSegmentsPage.PATH)
+  await traceStep('Schedule Updates', async () => {
+    const scheduleUpdatesPage = new ScheduleUpdates(page);
+    await scheduleUpdatesPage.checkUrl();
+    await scheduleUpdatesPage.chboxAllDay.check();
+    await scheduleUpdatesPage.clickNext();
+  });
 
-    const extraSegmentsPage = new ExtraSegmentsPage(page)
-    await extraSegmentsPage.validatePage("Create Additional Wi-Fi Networks")
-    await extraSegmentsPage.chboxGuests.click()
-    await extraSegmentsPage.goToNextPage(ShareDataPage.PATH)
+  await traceStep('Wifi SSID and Pwd Setup', async () => {
+    const wifiSettingsPage = new WifiSettings(page);
+    await wifiSettingsPage.checkUrl();
+    await wifiSettingsPage.clickNext();
+  });
 
-    const shareDataPage = new ShareDataPage(page)
-    await shareDataPage.validatePage("Join the Product Improvement Programme")
-    await shareDataPage.goToNextPage(DeviceCredentialsPage.PATH)
+  await traceStep('Wifi Performance Selection', async () => {
+    const wifiPerfPage = new WifiPerformance(page);
+    await wifiPerfPage.checkUrl();
+    await wifiPerfPage.radioMaxPerf.click();
+    await wifiPerfPage.clickNext();
+  });
 
-    const deviceCredentialsPage = new DeviceCredentialsPage(page)
-    await deviceCredentialsPage.validatePage("Store Your Keenetic Device Credentials")
-    await deviceCredentialsPage.goToNextPage(FinishSetupPage.PATH)
+  await traceStep('Select Extra Segments', async () => {
+    const extraSegmentsPage = new ExtraSegments(page);
+    await extraSegmentsPage.checkUrl();
+    await extraSegmentsPage.chooseSegment(extraSegmentsPage.chboxGuests);
+    await extraSegmentsPage.clickNext();
+  });
 
-    const finishSetupPage = new FinishSetupPage(page)
-    await finishSetupPage.validatePage("Finishing the Setup")
-    await finishSetupPage.goToNextPage(FinishSetupPage.dashboardPath)
-    })
+  await traceStep('Device Credentials', async () => {
+    const deviceCredsPage = new DeviceCreds(page);
+    await deviceCredsPage.checkUrl();
+    await deviceCredsPage.clickNext();
+  });
 
-})
+  await traceStep('Finish Setup', async () => {
+    const finishPage = new Finish(page);
+    await finishPage.checkUrl();
+    await finishPage.clickNext();
+  });
+});
