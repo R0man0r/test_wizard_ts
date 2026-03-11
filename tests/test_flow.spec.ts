@@ -5,7 +5,6 @@ import { Password } from '../models/Password';
 import { Mode } from '../models/Mode';
 import { RouterMode } from '../models/RouterMode';
 import { Schema } from '../models/Schema';
-import { trace } from 'node:console';
 import { WanPort } from '../models/WanPort';
 import { ConnectToEth } from '../models/ConnectToEth';
 import { ScheduleUpdates } from '../models/ScheduleUpdates';
@@ -39,7 +38,12 @@ test('Setup Wizard Flow', async ({ page }) => {
   await traceStep('Set up password', async () => {
     const passwordPage = new Password(page);
     await passwordPage.checkUrl();
-    await passwordPage.fillPwd('admin1234');
+    await passwordPage.fillPwdWeak();
+    await passwordPage.fillPwdRus();
+    await passwordPage.fillPwdKnown();
+    await passwordPage.fillPwdStrong();
+    await passwordPage.fillPwdFair();
+    // await passwordPage.fillPwd('admin1234');
     await passwordPage.clickNext();
   });
 
