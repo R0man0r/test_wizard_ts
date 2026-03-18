@@ -43,7 +43,6 @@ test('Setup Wizard Flow', async ({ page }) => {
     await passwordPage.fillPwdKnown();
     await passwordPage.fillPwdStrong();
     await passwordPage.fillPwdFair();
-    // await passwordPage.fillPwd('admin1234');
     await passwordPage.clickNext();
   });
 

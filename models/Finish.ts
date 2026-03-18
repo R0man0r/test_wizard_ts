@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import test, { Page } from '@playwright/test';
 import { Base } from './Base';
 
 export class Finish extends Base {
@@ -9,7 +9,11 @@ export class Finish extends Base {
   }
 
   override async clickNext(): Promise<void> {
+    test.setTimeout(120000);
     await this.nextBtn.click();
-    await this.spinner.waitFor({ state: 'hidden', timeout: 120_000 });
+
+    await this.page.waitForURL(/dashboard/, {
+      waitUntil: 'load',
+    });
   }
 }
